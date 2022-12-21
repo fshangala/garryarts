@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %} - Order {{artOrder.id}}{% endblock title %}
+
+{% block main %}
+<div class="container-sm my-3">
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">Well Done! {{artOrder.customer.name}}</h4>
+        <p>You will be contacted through the number you have provided <b>{{artOrder.customer.phone}}</b></p>
+        <p>If you dont get a call in less that 2 hours, consider it being a communication issue with us. Most orders are attended to minutes just after being placed.</p>
+        <hr>
+        <p class="mb-0">Your art order has successfully been submitted.</p>
+      </div>
+</div>
+{% endblock main %}
