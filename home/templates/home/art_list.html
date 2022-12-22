@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% block title %} - Arts{% endblock title %}
+
+{% block navbarCollapse %}
+<button type="button" class="btn btn-primary d-flex" data-bs-toggle="modal" data-bs-target="#cartModal">Cart <span class="badge text-bg-warning mx-1" id="cart-size">0</span></button>
+{% endblock navbarCollapse %}
+
+{% block main %}
+<div class="container-sm">
+    <div class="arts">
+    {% for art in arts %}
+    <div class="card text-bg-dark mx-1 shadow border-primary">
+        <img src="{{art.image}}" class="card-img" alt="{{art.caption}}">
+        <div class="card-img-overlay bg-dark p-2 bg-opacity-50">
+            <h5 class="card-title">K{{art.price}}</h5>
+          <p class="card-text">{{art.caption}}</p>
+        </div>
+        <div class="card-footer">
+            <div class="btn-group w-100" role="group" aria-label="Basic outlined example" data-art-id="{{art.id}}" data-art-image="{{art.image}}">
+              {% if art.available %}
+              <button type="button" class="btn btn-success add-to-cart" data-art-available="{{art.available}}">Add to Cart</button>
+              {% else %}
+              <button type="button" class="btn btn-danger" disabled>Sold</button>
+              {% endif %}
+              <button type="button" class="btn btn-primary view-image" data-art-available="{{art.available}}" data-bs-toggle="modal" data-bs-target="#imageViewer">View image</button>
+            </div>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+    <!-- Button trigger modal -->
+  
+  <!-- Modal -->
+  <div class="modal fade" id="imageViewer" tabindex="-1" aria-labelledby="imageViewerLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="imageViewerLabel">Image Viewer</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img src="" class="img-fluid" alt="..." />
+        </div>
+        <div class="modal-footer">
+            <div class="btn-group w-100" role="group" aria-label="Basic outlined example">
+              <button type="button" class="btn btn-success img-add-to-cart">Add to Cart</button>
+              <button type="button" class="btn btn-warning place-order" data-bs-toggle="modal" data-bs-target="#cartModal">Place Order</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="cartModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="cartModalLabel">Cart</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="orderForm" method="POST" action="{% url 'home:place-art-order' %}">
+            {% csrf_token %}
+            <div id="orderContainer" class="row row-cols-1 row-cols-md-3 g-4"></div>
+            <div class="form-floating mb-3">
+              <input type="tel" class="form-control" name="phone" placeholder="(+260) --- ------" required>
+              <label for="phone">Phone number</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" name="name" placeholder="John Doe" required>
+              <label for="name">Name</label>
+            </div>
+            <button id="submitOrder" type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{{arts|json_script:"arts-json"}}
+{% endblock main %}
+
+{% block jstags %}
+<script>
+    var cart = []
+    $(document).ready(()=>{
+        $(".arts").slick({
+            accessibility:true,
+            arrows:true,
+            lazyLoad:"ondemand",
+            slidesToShow:3,
+            slidesToScroll:1,
+            dots:true,
+            centerMode:true,
+            centerPadding: '20px',
+            adaptiveHeight: true,
+            responsive:[
+            {
+                breakpoint:1024,
+                settings:{
+                    slidesToShow:3,
+                    slidesToScroll:1
+                }
+            },
+            {
+                breakpoint:600,
+                settings:{
+                    slidesToShow:2,
+                    slidesToScroll:1
+                }
+            },
+            {
+                breakpoint:480,
+                settings:{
+                    slidesToShow:1,
+                    slidesToScroll:1
+                }
+            }
+            ]
+        });
+
+        var arts_json = document.querySelector("#arts-json").innerText
+        
+        document.querySelectorAll(".view-image").forEach((item)=>{
+            item.addEventListener("click",(event)=>{
+              var img = document.querySelector("#imageViewer img")
+              img.setAttribute("src",event.target.parentElement.getAttribute("data-art-image"))
+              img.setAttribute("data-art-id",event.target.parentElement.getAttribute("data-art-id"))
+              if(event.target.getAttribute("data-art-available")=="true"){
+                document.querySelector("#imageViewer .img-add-to-cart").innerText = "Add To Cart"
+              } else {
+                document.querySelector("#imageViewer .img-add-to-cart").innerText = "Sold"
+                document.querySelector("#imageViewer .img-add-to-cart").setAttribute("disabled","true")
+                document.querySelector("#imageViewer .place-order").setAttribute("disabled","true")
+              }
+            })
+        })
+        document.querySelectorAll(".add-to-cart").forEach((item)=>{
+            item.addEventListener("click",(event)=>{
+                cart.push({
+                    id:event.target.parentElement.getAttribute("data-art-id"),
+                    image:event.target.parentElement.getAttribute("data-art-image")
+                })
+                renderCart()
+            })
+        })
+        document.querySelectorAll(".img-add-to-cart").forEach((item)=>{
+            item.addEventListener("click",(event)=>{
+              var img = document.querySelector("#imageViewer img")
+                cart.push({
+                    id:img.getAttribute("data-art-id"),
+                    image:img.getAttribute("src")
+                })
+                renderCart()
+            })
+        })
+        document.querySelectorAll(".place-order").forEach((item)=>{
+            item.addEventListener("click",(event)=>{
+              cart = []
+              var img = document.querySelector("#imageViewer img")
+                cart.push({
+                    id:img.getAttribute("data-art-id"),
+                    image:img.getAttribute("src")
+                })
+                renderCart()
+            })
+        })
+        document.querySelector("#orderForm").addEventListener("submit",(event)=>{
+          if (cart.length === 0) {
+            event.preventDefault()
+            alert("Cart is empty!")
+          }
+        })
+    });
+    function removeDuplicates(arr) {
+      var unique = []
+      arr.forEach((item)=>{
+        unique = unique.filter((it)=>{
+          return it.id !== item.id
+        })
+        unique.push(item)
+      })
+      return unique
+    }
+
+    function renderCart(){
+        var orderForm = document.querySelector("#orderForm")
+        var container = document.querySelector("#orderContainer")
+        container.innerHtml = ""
+        container.innerText = ""
+        cart = removeDuplicates(cart);
+        cart.forEach((item,index,arr)=>{
+            var col = document.createElement("div")
+            col.classList.add("col","mb-3")
+            container.appendChild(col)
+
+            var card = document.createElement("div")
+            card.classList.add("card")
+            col.appendChild(card)
+
+            var img = document.createElement("img")
+            img.classList.add("card-img-top")
+            img.setAttribute("src",item.image)
+            card.appendChild(img)
+
+            var cardBody = document.createElement("div")
+            cardBody.classList.add("card-body")
+            card.appendChild(cardBody)
+
+            var input = document.createElement("input")
+            input.setAttribute("type","text")
+            input.setAttribute("name","arts")
+            input.setAttribute("readonly","true")
+            input.setAttribute("hidden","true")
+            input.setAttribute("value",item.id)
+            input.setAttribute("data-cart-index",index)
+            input.classList.add("form-control")
+            cardBody.appendChild(input)
+
+            var cardFooter = document.createElement("div")
+            cardFooter.classList.add("card-footer")
+            card.appendChild(cardFooter)
+
+            var removeButton = document.createElement("button")
+            removeButton.classList.add("btn","btn-danger","remove-button")
+            removeButton.setAttribute("data-cart-index",index)
+            removeButton.innerText = "Remove"
+            removeButton.addEventListener("click",(event)=>{
+              event.preventDefault()
+              var index = event.target.getAttribute("data-cart-index")
+              cart = cart.filter((it)=>{
+                return it !== item
+              })
+              renderCart()
+            })
+            cardFooter.appendChild(removeButton)
+        })
+        document.querySelector("#cart-size").innerText = cart.length
+    }
+</script>
+{% endblock jstags %}
