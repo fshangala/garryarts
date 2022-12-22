@@ -89,9 +89,9 @@ if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'garryprint',
+            'NAME': 'garryarts',
             'USER': 'root',
-            'PASSWORD': 'shangala',
+            'PASSWORD': 'root',
             'HOST':'mysql',
             'PORT':'3306',
         }
