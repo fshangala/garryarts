@@ -128,7 +128,7 @@
               var img = document.querySelector("#imageViewer img")
               img.setAttribute("src",event.target.parentElement.getAttribute("data-art-image"))
               img.setAttribute("data-art-id",event.target.parentElement.getAttribute("data-art-id"))
-              if(event.target.getAttribute("data-art-available")=="true"){
+              if(event.target.getAttribute("data-art-available")=="True"){
                 document.querySelector("#imageViewer .img-add-to-cart").innerText = "Add To Cart"
               } else {
                 document.querySelector("#imageViewer .img-add-to-cart").innerText = "Sold"
