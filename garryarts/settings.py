@@ -91,7 +91,7 @@ if not DEBUG:
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'garryarts',
             'USER': 'root',
-            'PASSWORD': 'root',
+            'PASSWORD': 'shangala',
             'HOST':'mysql',
             'PORT':'3306',
         }
