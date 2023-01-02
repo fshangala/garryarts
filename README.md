@@ -22,7 +22,7 @@ Image galery for artworks done by garry habasonda
 
 ### Run the django app on the domain `garryarts.iitsar.com` and specify a volume to serve media files
 ```bash
-docker run -dp 8000:80 --network -v /home/iitsar/garryarts.iitsar.com:/app/media fshangala/garryarts:dev
+docker run -dp 8000:80 -v /home/iitsar/sample.iitsar.com:/app/media fshangala/garryarts:dev
 ```
 
 ### Execute bash in the django app container, run migrations and create a superuser

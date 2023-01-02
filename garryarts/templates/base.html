@@ -38,13 +38,13 @@
     <script type="text/javascript" src="{% static 'slick/slick.min.js' %}"></script>
     {% block jstags %}{% endblock jstags %}
     <script>
-      document.ready = function(){
-        fetch('version/').then(response => response.json()).then((data)=>{
+      $(document).ready(()=>{
+        fetch('/version/').then(response => response.json()).then((data)=>{
           document.querySelector("#version-number").innerText = data.version
         }).catch((error)=>{
           console.log(error)
         })
-      }
+      })
     </script>
   </body>
 </html>
