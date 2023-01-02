@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
+
+env = environ.Env(
+    DEBUG=(bool,False)
+)
+environ.Env.read_env()
 
 VERSION = "v1.1.0"
 
@@ -22,10 +28,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&y-oc24hik1#(69uc(1426!g=6(5sq^%=+&luvtw93n-(v^ic^'
+SECRET_KEY = env('SECRETE_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -157,4 +163,4 @@ REST_FRAMEWORK = {
     ]
 }
 
-TELEGRAM_BASE="https://api.telegram.org/bot5838379022:AAGJsw_rS92jg-2n4TxCW8R1RRPZR3CGbZ0"
+TELEGRAM_BASE=env("TELEGRAM_BASE")
