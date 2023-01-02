@@ -1,7 +1,7 @@
 # garryarts
 Image galery for artworks done by garry habasonda
 
-## Run v1.0 (latest) in docker
+## Run in docker
 
 ### Create docker network and docker volume
 - `docker network create garryarts-net`
@@ -17,3 +17,21 @@ Image galery for artworks done by garry habasonda
 - `docker exec -it <container_id> /bin/bash`
 - `python manage.py migrate`
 - `python manage.py createsuperuser --username admin --email admin@localhost`
+
+## Test in docker
+
+### Run the django app on the domain `garryarts.iitsar.com` and specify a volume to serve media files
+```bash
+docker run -dp 8000:80 --network -v /home/iitsar/garryarts.iitsar.com:/app/media fshangala/garryarts:dev
+```
+
+### Execute bash in the django app container, run migrations and create a superuser
+```bash
+docker exec -it <container_id> /bin/bash
+```
+```bash
+python manage.py migrate
+```
+```bash
+python manage.py createsuperuser --username admin --email admin@localhost
+```

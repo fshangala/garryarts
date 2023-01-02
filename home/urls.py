@@ -10,7 +10,7 @@ app_name="home"
 urlpatterns = [
     path('',views.HomeView.as_view(),name="home"),
     path('place-art-order/',views.PlaceOrderView.as_view(),name="place-art-order"),
-    path('version/',views.GetVersion.as_view(),name="version")
+    path('version/',views.GetVersion.as_view(),name="version"),
 ]
 
 if settings.DEBUG:
