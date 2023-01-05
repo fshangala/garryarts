@@ -16,4 +16,4 @@ class MessageAdmin(admin.ModelAdmin):
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    list_display=["user_id","phone_number","first_name","last_name"]
+    list_display=["user_id","phone_number","first_name","last_name","staff"]

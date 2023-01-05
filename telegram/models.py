@@ -3,11 +3,14 @@ from django.db import models
 # Create your models here.
 class Contact(models.Model):
     user_id=models.BigIntegerField(unique=True)
-    username=models.CharField(max_length=200,unique=True,null=True)
+    username=models.CharField(max_length=200,null=True,default='username')
     phone_number=models.CharField(max_length=200,null=True)
     first_name=models.CharField(max_length=200,null=True)
     last_name=models.CharField(max_length=200,null=True)
     staff=models.BooleanField(default=False)
+    
+    def __str__(self) -> str:
+        return str(self.user_id)+"->"+self.first_name+'_'+self.last_name
 
 class Update(models.Model):
     update_id=models.BigIntegerField(unique=True)
@@ -22,7 +25,7 @@ class Update(models.Model):
     bot_command=models.BooleanField()
     
     def __str__(self) -> str:
-        return str(self.update_id)+" "+self.text
+        return str(self.update_id)
 
 class Message(models.Model):
     message_id=models.BigIntegerField(unique=True)
