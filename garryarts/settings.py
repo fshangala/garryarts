@@ -11,19 +11,28 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import environ, os
+
+env = environ.Env(
+    DEBUG=(bool,False)
+)
+
+VERSION = "v1.1.0"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+environ.Env.read_env(os.path.join(BASE_DIR,".env"))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&y-oc24hik1#(69uc(1426!g=6(5sq^%=+&luvtw93n-(v^ic^'
+SECRET_KEY = env('SECRETE_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -33,6 +42,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'garryarts',
     'home',
+    'telegram',
     
     'rest_framework',
     'rest_framework.authtoken',
@@ -131,7 +141,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'https://cdn.statically.io/gh/fshangala/garryarts/v1.0/staticfiles/'
+STATIC_URL = 'https://cdn.statically.io/gh/fshangala/garryarts/main/staticfiles/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
@@ -153,3 +163,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+
+TELEGRAM_BASE=env("TELEGRAM_BASE")
+
+CSRF_TRUSTED_ORIGINS=[
+    env('CSRF_TRUSTED_ORIGIN'),
+]
