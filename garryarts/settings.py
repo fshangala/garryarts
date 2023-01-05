@@ -167,5 +167,5 @@ REST_FRAMEWORK = {
 TELEGRAM_BASE=env("TELEGRAM_BASE")
 
 CSRF_TRUSTED_ORIGINS=[
-    'https://*.iitsar.com',
+    env('CSRF_TRUSTED_ORIGIN'),
 ]
